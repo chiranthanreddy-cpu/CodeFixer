@@ -19,11 +19,17 @@ This MVP excludes authentication, databases and saved history, code execution, G
 
 ## Cost calculation
 
-Pricing should be confirmed against the selected model's current OpenRouter listing before launch. Fill in the current input/output token prices here rather than relying on stale values:
+For the assignment estimate, `openai/gpt-4o-mini` is calculated at **$0.15 per 1M input tokens** and **$0.60 per 1M output tokens**.
 
-- Input price: `[current price per 1M tokens]`
-- Output price: `[current price per 1M tokens]`
-- Estimated cost per fix: `((average input tokens × input price) + (average output tokens × output price)) / 1,000,000`
+Assuming an average request uses about **600 input tokens** and **400 output tokens**, and the product receives **300 fix requests per month**:
+
+- Input cost per request: `600 × $0.15 / 1,000,000 = $0.00009`
+- Output cost per request: `400 × $0.60 / 1,000,000 = $0.00024`
+- Total AI cost per request: `$0.00009 + $0.00024 = $0.00033`
+- Estimated monthly AI cost: `300 × $0.00033 = $0.099`
+- **Estimated monthly AI cost: approximately $0.10/month**
+
+This estimate covers model inference only. Hosting costs depend on the deployment providers and selected plans.
 
 ## Local setup
 
@@ -41,10 +47,17 @@ Requirements: Node.js 18+ (Node 24 is also supported) and an OpenRouter API key.
 | `OPENROUTER_API_KEY` | Yes | OpenRouter credential; backend-only |
 | `PORT` | No | Backend port; defaults to `3000` |
 
-## Deployment notes
+## Deployment
 
-Deploy the frontend and Express backend separately or serve them behind one reverse proxy. Configure the frontend host to proxy `/api` to the backend so the browser only calls CodeFixer's own API.
+The MVP is deployed as two services:
 
-- Frontend URL: `[add deployed frontend URL]`
-- Backend URL: `[add deployed backend URL]`
-- Ensure `OPENROUTER_API_KEY` is configured only in the backend deployment environment.
+- **Frontend:** Vercel
+- **Backend:** Render
+
+The production frontend uses `VITE_API_URL` to call the deployed Express backend. The browser never receives the OpenRouter API key.
+
+- Frontend: https://frontend-flax-delta-98.vercel.app
+- Backend: https://codefixer-backend.onrender.com
+- Backend health check: https://codefixer-backend.onrender.com/health
+
+The `OPENROUTER_API_KEY` is configured only in the Render backend deployment environment.
