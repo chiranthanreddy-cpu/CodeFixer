@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './App.css'
 
 const languages = ['JavaScript', 'Python', 'Java', 'C', 'C++', 'TypeScript', 'HTML/CSS', 'Other']
+const API_BASE_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '')
 
 function App() {
   const [language, setLanguage] = useState('JavaScript')
@@ -23,7 +24,7 @@ function App() {
     }
     setIsLoading(true)
     try {
-      const response = await fetch('/api/fix', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ language, code, error }) })
+      const response = await fetch(`${API_BASE_URL}/api/fix`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ language, code, error }) })
       const data = await response.json().catch(() => ({}))
       if (!response.ok) throw new Error(data.error || 'Something went wrong while fixing your code.')
       setResult(data)
